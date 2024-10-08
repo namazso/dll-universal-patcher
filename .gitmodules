@@ -1,0 +1,6 @@
+[submodule "tiny-json"]
+	path = tiny-json
+	url = https://github.com/rafagafe/tiny-json.git
+[submodule "phnt"]
+	path = phnt
+	url = https://github.com/winsiderss/phnt.git
