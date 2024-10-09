@@ -1,0 +1,76 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "type": "array",
+  "description": "List of patches to apply.",
+  "items": {
+    "type": "object",
+    "description": "A single patch entry.",
+    "properties": {
+      "modules": {
+        "type": "array",
+        "description": "Array of module names to apply this patch to. Use {exe} for specifying the current main executable without hardcoding the name.",
+        "items": {
+          "type": "string"
+        },
+        "minItems": 1
+      },
+      "pattern": {
+        "type": "string",
+        "description": "Pattern to match, either in \"IDA Style\" or advanced.",
+        "pattern": "^((([0-9A-Fa-f]{2}|\\?|\\?\\?)(\\s+|$))+|#([0-9A-Fa-f]{4})+)$"
+      },
+      "replacement": {
+        "type": "string",
+        "description": "Replacement bytes, as a hex string.",
+        "pattern": "^([0-9A-Fa-f]{2}(\\s+|$))+$"
+      },
+      "min_matches": {
+        "type": "integer",
+        "description": "Minimum count of matches.",
+        "default": 1,
+        "minimum": 0
+      },
+      "max_matches": {
+        "type": "integer",
+        "description": "Maximum count of matches.",
+        "default": 1,
+        "minimum": 0
+      },
+      "on_initialize": {
+        "type": "boolean",
+        "description": "Whether the patches should be attempted when the patcher module initializes.",
+        "default": false
+      },
+      "on_process_initialized": {
+        "type": "boolean",
+        "description": "Whether the patches should be attempted when the process initialized, before the main entry point is called.",
+        "default": false
+      },
+      "on_before_dllmain": {
+        "type": "boolean",
+        "description": "Whether the patches should be attempted when the target module is loaded later via LoadLibrary.",
+        "default": false
+      },
+      "is_code": {
+        "type": "boolean",
+        "description": "If true, only executable sections are searched, if false only data sections are searched.",
+        "default": true
+      },
+      "allowed_to_fail": {
+        "type": "boolean",
+        "description": "Failure will not result in warning and process termination.",
+        "default": false
+      },
+      "multishot": {
+        "type": "boolean",
+        "description": "Try to apply the patch multiple times. Recommended if you have multiple modules targeted.",
+        "default": false
+      }
+    },
+    "required": [
+      "modules",
+      "pattern",
+      "replacement"
+    ]
+  }
+}

@@ -217,7 +217,7 @@ void iterate_modules(patch_check_reason reason) {
 
 VOID NTAPI post_process_init() {
   iterate_modules(patch_check_reason::process_initialized);
-  NtCurrentPeb()->PostProcessInitRoutine = s_original_post_init;
+  NtCurrentPeb()->PostProcessInitRoutine = (PVOID)s_original_post_init;
   if (s_original_post_init)
     s_original_post_init();
 }
@@ -300,9 +300,9 @@ public:
 };
 
 char* get_config() {
-  LDR_RESOURCE_INFO res_info{(UINT_PTR)RT_RCDATA};
+  LDR_RESOURCE_INFO res_info{(UINT_PTR)RT_RCDATA, 1, 0};
   PIMAGE_RESOURCE_DATA_ENTRY res_data_entry{};
-  LdrFindResource_U(&__ImageBase, &res_info, RESOURCE_TYPE_LEVEL, &res_data_entry);
+  LdrFindResource_U(&__ImageBase, &res_info, RESOURCE_DATA_LEVEL, &res_data_entry);
   if (res_data_entry) {
     PVOID res_data{};
     ULONG res_data_size{};
@@ -604,7 +604,7 @@ void initialize() {
   NtCurrentPeb()->PostProcessInitRoutine = (PVOID)&post_process_init;
 
   PVOID ntdll{};
-  RtlPcToFileHeader(&RtlPcToFileHeader, &ntdll);
+  RtlPcToFileHeader((PVOID)&RtlPcToFileHeader, &ntdll);
   const auto pLdrRegisterDllNotification = GET_EXPORT(LdrRegisterDllNotification);
   pLdrRegisterDllNotification(0, &dll_notification, nullptr, &s_dll_notification_cookie);
 
